@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.CadastrarActivity">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cadastrar Novo Mutante"/>
+
+    <TextView
+        android:id="@+id/tNome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_marginTop="5dp"
+        android:text="Nome"/>
+
+    <EditText
+        android:id="@+id/nome_mut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tNome" />
+
+    <Button
+        android:id="@+id/imgBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:layout_alignTop="@id/nome_mut"
+        android:text="Escolher Imagem..."
+        android:onClick="getImageFromGallery"/>
+
+    <ImageView
+        android:id="@+id/imgPreview"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@id/imgBtn"
+        android:layout_centerInParent="@id/imgBtn"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/tHabil"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nome_mut"
+        android:layout_marginTop="5dp"
+        android:text="Habilidades (até 3)"/>
+
+    <EditText
+        android:id="@+id/hab_mut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tHabil" />
+
+    <Button
+        android:id="@+id/addBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hab_mut"
+        android:onClick="addHabil"
+        android:text="Adicionar" />
+
+    <Button
+        android:id="@+id/remBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/addBtn"
+        android:layout_below="@id/hab_mut"
+        android:onClick="delHabil"
+        android:text="Remover" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/remBtn" >
+    </ListView>
+
+    <Button
+        android:id="@+id/delBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="80dp"
+        android:text="Excluir"
+        android:onClick="delete"/>
+
+    <Button
+        android:id="@+id/savBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="80dp"
+        android:text="Cadastrar"
+        android:onClick="submit"/>
+
+</RelativeLayout>
