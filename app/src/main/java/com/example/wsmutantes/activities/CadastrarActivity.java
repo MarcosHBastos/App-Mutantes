@@ -146,7 +146,6 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
                 try {
                     imageStream = getContentResolver().openInputStream(imageUri);
                     final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                    mutante.setImgbm(selectedImage);
                     encodedImage = MutanteUtils.encodeImage(selectedImage);
                     imgView.setImageURI(imageUri);
                     mutante.setImage(encodedImage);

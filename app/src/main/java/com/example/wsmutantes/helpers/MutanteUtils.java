@@ -182,7 +182,6 @@ public class MutanteUtils {
             byte[] imageAsBytes = Base64.decode(contents, Base64.DEFAULT);
             bp = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
 
-            mutant.setImgbm(bp);
             mutant.setImage(contents);
         }
         return bp;
