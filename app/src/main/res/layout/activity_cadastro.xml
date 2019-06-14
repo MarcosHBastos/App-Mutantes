@@ -1,89 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/translucidColorAccent"
     tools:context=".activities.CadastrarActivity">
 
     <TextView
         android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cadastrar Novo Mutante"/>
-
-    <TextView
-        android:id="@+id/tNome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:layout_marginTop="5dp"
-        android:text="Nome"/>
+        android:layout_margin="10dp"
+        android:text="Cadastrar Novo Mutante"
+        android:textSize="25dp" />
 
     <EditText
         android:id="@+id/nome_mut"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tNome" />
+        android:layout_below="@id/title"
+        android:layout_margin="10dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/white"
+        android:hint="Nome do Mutante" />
 
     <Button
         android:id="@+id/imgBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/addBtn"
         android:layout_alignParentRight="true"
         android:layout_margin="10dp"
-        android:layout_alignTop="@id/nome_mut"
+        android:background="@color/colorAccent"
+        android:onClick="getImageFromGallery"
         android:text="Escolher Imagem..."
-        android:onClick="getImageFromGallery"/>
+        android:textSize="12dp" />
 
     <ImageView
         android:id="@+id/imgPreview"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_below="@id/imgBtn"
-        android:layout_centerInParent="@id/imgBtn"
+        android:layout_width="135dp"
+        android:layout_height="118dp"
+        android:layout_alignTop="@id/nome_mut"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:layout_margin="10dp"/>
-
-    <TextView
-        android:id="@+id/tHabil"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/nome_mut"
-        android:layout_marginTop="5dp"
-        android:text="Habilidades (até 3)"/>
+        android:layout_centerInParent="@id/imgBtn"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginBottom="10dp" />
 
     <EditText
         android:id="@+id/hab_mut"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tHabil" />
+        android:layout_below="@id/nome_mut"
+        android:layout_margin="10dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@android:color/white"
+        android:hint="Habilidades (até 3)" />
 
     <Button
         android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/hab_mut"
+        android:layout_margin="10dp"
+        android:background="@color/colorAccent"
         android:onClick="addHabil"
-        android:text="Adicionar" />
+        android:text="Adicionar"
+        android:textSize="12dp" />
 
     <Button
         android:id="@+id/remBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/addBtn"
         android:layout_below="@id/hab_mut"
+        android:layout_margin="10dp"
+        android:layout_toRightOf="@id/addBtn"
+        android:background="@color/colorAccent"
         android:onClick="delHabil"
-        android:text="Remover" />
+        android:text="Remover"
+        android:textSize="12dp" />
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/remBtn"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/remBtn" >
-    </ListView>
+        android:layout_margin="10dp"></ListView>
 
     <Button
         android:id="@+id/delBtn"
@@ -92,8 +98,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="80dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/colorAccent"
+        android:onClick="delete"
         android:text="Excluir"
-        android:onClick="delete"/>
+        android:textSize="14dp" />
 
     <Button
         android:id="@+id/savBtn"
@@ -102,7 +111,10 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginRight="80dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/colorAccent"
+        android:onClick="submit"
         android:text="Cadastrar"
-        android:onClick="submit"/>
+        android:textSize="14dp" />
 
 </RelativeLayout>

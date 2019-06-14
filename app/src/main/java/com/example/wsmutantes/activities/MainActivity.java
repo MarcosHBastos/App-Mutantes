@@ -46,7 +46,9 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
     }
 
     public void login(View view){
-
+        Intent intent = new Intent(MainActivity.this, LandingActivity.class);
+        startActivity(intent);
+        finish();
         mQueue = CustomVolleyRequestQueue.getInstance(this.getApplicationContext())
                 .getRequestQueue();
 

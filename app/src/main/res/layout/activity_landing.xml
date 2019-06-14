@@ -1,40 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/translucidColorAccent"
     tools:context=".activities.LandingActivity">
 
-    <Button
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/list"
-        android:text="Cadastrar Mutante"
-        android:onClick="novo"/>
-
-    <Button
-        android:id="@+id/list"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Listar todos os Mutantes"
-        android:onClick="listar"/>
-
-    <Button
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/list"
-        android:text="Pesquisar por habilidade"
-        android:onClick="procurar"/>
-
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
+        android:text="Opções:"
+        android:textSize="25dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/list"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:onClick="novo"
+        android:background="@color/colorAccent"
+        android:text="Cadastrar Mutante" />
+
+    <Button
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:background="@color/colorAccent"
+        android:onClick="listar"
+        android:text="Listar todos os Mutantes" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/list"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:background="@color/colorAccent"
+        android:onClick="procurar"
+        android:text="Pesquisar por habilidade" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="Sair"
-        android:onClick="sair"/>
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorAccent"
+        android:layout_margin="20dp"
+        android:onClick="sair"
+        android:text="Sair" />
 
 </RelativeLayout>
