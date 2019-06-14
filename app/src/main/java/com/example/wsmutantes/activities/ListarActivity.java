@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,13 +103,17 @@ public class ListarActivity extends ListActivity implements Response.Listener,
     }
 
     public void queueStarter() {
-        String skill = filter.getText().toString();
+        try {
+            String skill = filter.getText().toString();
+            String encode = URLEncoder.encode(skill, "UTF-8");
 
-        mQueue = CustomVolleyRequestQueue.getInstance(this.getApplicationContext()).getRequestQueue();
-        final CustomJSONObjectRequest jsonRequest = new CustomJSONObjectRequest(Request.Method.GET,
-                url + "?skill=" + skill, j, this, this);
-        jsonRequest.setTag(REQUEST_TAG);
-        mQueue.add(jsonRequest);
+            mQueue = CustomVolleyRequestQueue.getInstance(this.getApplicationContext()).getRequestQueue();
+            final CustomJSONObjectRequest jsonRequest = new CustomJSONObjectRequest(Request.Method.GET, url + "?skill=" + encode, j, this, this);
+            jsonRequest.setTag(REQUEST_TAG);
+            mQueue.add(jsonRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

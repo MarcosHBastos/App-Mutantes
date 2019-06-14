@@ -8,25 +8,33 @@
     tools:context=".activities.MainActivity">
 
     <EditText
+        android:id="@+id/username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="UserName"
         android:layout_above="@id/password"
-        android:layout_margin="20dp"
-        android:id="@+id/username"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@android:color/white"
+        android:hint="UserName"
         android:textColor="@android:color/white"
-        android:backgroundTint="@android:color/white"/>
+        android:textColorHint="@android:color/darker_gray" />
 
     <EditText
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:id="@+id/password"
         android:layout_centerInParent="true"
-        android:layout_margin="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@android:color/white"
+        android:hint="Password"
         android:inputType="textPassword"
         android:textColor="@android:color/white"
-        android:backgroundTint="@android:color/white"/>
+        android:textColorHint="@android:color/darker_gray" />
 
     <Button
         android:layout_width="match_parent"

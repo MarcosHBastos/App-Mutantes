@@ -211,11 +211,8 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        // Toast.makeText(CadastrarActivity.this, "Já existe um mutante com esse nome na base de dados!",
-        //       Toast.LENGTH_LONG).show();
-
-        MutanteUtils.popAlertDialog("Erro de comunicação com o servidor: " + error.getMessage(),
-                CadastrarActivity.this);
+        Toast.makeText(CadastrarActivity.this, "Já existe um mutante com esse nome na base de dados!",
+            Toast.LENGTH_LONG).show();
     }
 
     @Override
