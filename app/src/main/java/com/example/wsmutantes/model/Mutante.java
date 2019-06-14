@@ -10,6 +10,7 @@ public class Mutante implements Serializable {
     private int id;
     private List<String> skills;
     private String nome;
+    private String imageFileName;
     private String image;
     private Bitmap imgbm;
 
@@ -38,6 +39,14 @@ public class Mutante implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getImageFileName() {
+        return imageFileName;
+    }
+
+    public void setImageFileName(String image) {
+        this.imageFileName = image;
     }
 
     public String getImage() {

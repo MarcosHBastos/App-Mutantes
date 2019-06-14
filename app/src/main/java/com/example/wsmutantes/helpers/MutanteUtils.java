@@ -15,6 +15,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +112,7 @@ public class MutanteUtils {
         try {
             m.setId(jm.getInt("id"));
             m.setNome(jm.getString("name"));
+
             JSONArray sa = jm.getJSONArray("skills");
             List<String> skills = new ArrayList<>();
             for (int i = 0; i < sa.length(); i++) {
@@ -117,22 +120,8 @@ public class MutanteUtils {
             }
             m.setSkills(skills);
 
-            String cleanImage = jm.getString("image");
-
-            String filename = "file_" + m.getId();
-            m.setImage(filename);
-
-            String fileContents = cleanImage;
-            FileOutputStream outputStream;
-
-            try {
-                outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
-                Log.e("Parse", "DIR: " + context.getFilesDir() + "\n\n\n\n");
-                outputStream.write(fileContents.getBytes());
-                outputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            String image = jm.getString("image");
+            saveImage(context, m, image);
 
             return m;
         } catch (JSONException e) {
@@ -140,9 +129,6 @@ public class MutanteUtils {
         }
         return null;
     }
-
-    // email@email.com
-    // password
 
     public static List<Mutante> parseJSONMutanteList(JSONArray jma, Context context) {
         List<Mutante> mutanteList = new ArrayList<>();
@@ -156,4 +142,49 @@ public class MutanteUtils {
         return mutanteList;
     }
 
+    public static void saveImage(Context context, Mutante mutant, String content) {
+        String filename = "file_" + mutant.getId();
+
+        try {
+            FileOutputStream outputStream;
+            outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(content.getBytes());
+            outputStream.close();
+
+            mutant.setImageFileName(filename);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Bitmap getImageBitMap(Context context, Mutante mutant) {
+        String path = context.getFilesDir() + "/" + mutant.getImageFileName();
+
+        File file = new File(path);
+
+        int length = (int) file.length();
+        byte[] bytes = new byte[length];
+
+        try {
+            FileInputStream in = null;
+            in = new FileInputStream(file);
+            in.read(bytes);
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String contents = new String(bytes);
+
+        Bitmap bp = null;
+
+        if (contents != null && !contents.isEmpty()) {
+            byte[] imageAsBytes = Base64.decode(contents, Base64.DEFAULT);
+            bp = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+
+            mutant.setImgbm(bp);
+            mutant.setImage(contents);
+        }
+        return bp;
+    }
 }

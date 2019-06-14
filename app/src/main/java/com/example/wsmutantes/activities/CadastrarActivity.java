@@ -58,7 +58,6 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
 
-
         imgView = findViewById(R.id.imgPreview);
         nomeView = findViewById(R.id.nome_mut);
         list = findViewById(R.id.list);
@@ -66,52 +65,36 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
         Intent intent = getIntent();
         int opt = intent.getExtras().getInt("option");
 
-
-
         switch (opt) {
             case 1: //new
                 mutante = new Mutante();
                 hab_list = new ArrayList<>();
+
                 findViewById(R.id.delBtn).setVisibility(View.GONE);
+
                 message = "cadastra";
                 url = "http://10.0.2.2:3000/mutants";
                 requestmethod = Request.Method.POST;
+
                 break;
             case 2: //alt
                 mutante = (Mutante) intent.getExtras().getSerializable("mutante");
-                
-                String yourFilePath = getFilesDir() + "/" + mutante.getImage();
 
-                File file = new File(yourFilePath);
-
-                int length = (int) file.length();
-                byte[] bytes = new byte[length];
-                FileInputStream in = null;
-                try {
-                    in = new FileInputStream(file);
-
-                    in.read(bytes);
-
-                    in.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                Bitmap bitmap = MutanteUtils.getImageBitMap(this, mutante);
+                if (bitmap != null) {
+                    imgView.setImageBitmap(bitmap);
                 }
-
-                String contents = new String(bytes);
-
-                byte[] imageAsBytes = Base64.decode(contents, Base64.DEFAULT);
-                Bitmap bp = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
-
-                imgView.setImageBitmap(bp);
 
                 findViewById(R.id.delBtn).setVisibility(View.VISIBLE);
                 Button btn = findViewById(R.id.savBtn);
                 btn.setText("Alterar");
                 hab_list = mutante.getSkills();
                 nomeView.setText(mutante.getNome());
+
                 message = "altera";
                 url = "http://10.0.2.2:3000/mutants/" + mutante.getId();/**/
                 requestmethod = Request.Method.PUT;
+
                 break;
         }
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, hab_list);
