@@ -24,13 +24,15 @@
             android:id="@+id/password"
             android:inputType="textPassword"
             />
+
         <Button
+            android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login"
             android:background="#E96EE4"
-            android:textColor="#fff"
-            android:id="@+id/login"/>
+            android:onClick="login"
+            android:text="Login"
+            android:textColor="#fff" />
 
     </LinearLayout>
 </RelativeLayout>
