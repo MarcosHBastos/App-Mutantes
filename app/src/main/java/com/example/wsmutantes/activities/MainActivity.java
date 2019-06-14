@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Network;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -41,9 +43,15 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    public void login(View view){
+
         mQueue = CustomVolleyRequestQueue.getInstance(this.getApplicationContext())
                 .getRequestQueue();
-        final String url = "http:ip:3000/users/login";
+
+        final String url = "http://10.0.2.2:3000/users/login";
+
         JSONObject j = new JSONObject();
         try {
             j.put("email", usr.getText().toString());
@@ -55,20 +63,12 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
                 url, j, this, this);
         jsonRequest.setTag(REQUEST_TAG);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /* Trecho para pular a verificação de login
-                Intent intent = new Intent(MainActivity.this, LandingActivity.class);
-                startActivity(intent);
-                finish();*/
-                if ("".equals(usr.getText().toString()) || "".equals(pwd.getText().toString())) {
-                    Toast.makeText(MainActivity.this, "Campo(s) em branco!", Toast.LENGTH_LONG).show();
-                } else {
-                    mQueue.add(jsonRequest);
-                }
-            }
-        });
+        if ("".equals(usr.getText().toString()) || "".equals(pwd.getText().toString())) {
+            Toast.makeText(MainActivity.this, "Campo(s) em branco!", Toast.LENGTH_LONG).show();
+        } else {
+            mQueue.add(jsonRequest);
+        }
+
     }
 
     @Override
@@ -81,24 +81,33 @@ public class MainActivity extends AppCompatActivity implements Response.Listener
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        MutanteUtils.popAlertDialog("Erro ao autenticar: " + error.getMessage(),
+
+        MutanteUtils.popAlertDialog("Credenciais inválidas",
                 MainActivity.this);
+
+        String body;
+        if(error.networkResponse.data!=null) {
+            try {
+                body = new String(error.networkResponse.data,"UTF-8");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void onResponse(Object response) {
+
         try {
             String result = ((JSONObject) response).getString("message");
-            if ("200".equals(result)) {
-                Toast.makeText(MainActivity.this, "Autenticado com sucesso!", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(MainActivity.this, LandingActivity.class);
-                startActivity(intent);
-                finish();
-            } else {
-                MutanteUtils.popAlertDialog("Login ou senha incorretos",
-                        MainActivity.this);
-            }
+
+            Toast.makeText(MainActivity.this, result, Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(MainActivity.this, LandingActivity.class);
+            startActivity(intent);
+            finish();
         } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(MainActivity.this, "Erro ao autenticar", Toast.LENGTH_LONG).show();
             Log.e("Auth", "Erro ao autenticar");
         }
     }

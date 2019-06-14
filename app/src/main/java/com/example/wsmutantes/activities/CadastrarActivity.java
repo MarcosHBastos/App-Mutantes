@@ -1,11 +1,13 @@
 package com.example.wsmutantes.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -28,7 +30,10 @@ import com.example.wsmutantes.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,26 +65,53 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
 
         Intent intent = getIntent();
         int opt = intent.getExtras().getInt("option");
+
+
+
         switch (opt) {
             case 1: //new
                 mutante = new Mutante();
                 hab_list = new ArrayList<>();
                 findViewById(R.id.delBtn).setVisibility(View.GONE);
                 message = "cadastra";
-                url = "localhost:3000/mutants";
+                url = "http://10.0.2.2:3000/mutants";
                 requestmethod = Request.Method.POST;
                 break;
             case 2: //alt
                 mutante = (Mutante) intent.getExtras().getSerializable("mutante");
-                imgView.setImageBitmap(mutante.getImgbm());
+                
+                String yourFilePath = getFilesDir() + "/" + mutante.getImage();
+
+                File file = new File(yourFilePath);
+
+                int length = (int) file.length();
+                byte[] bytes = new byte[length];
+                FileInputStream in = null;
+                try {
+                    in = new FileInputStream(file);
+
+                    in.read(bytes);
+
+                    in.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                String contents = new String(bytes);
+
+                byte[] imageAsBytes = Base64.decode(contents, Base64.DEFAULT);
+                Bitmap bp = BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+
+                imgView.setImageBitmap(bp);
+
                 findViewById(R.id.delBtn).setVisibility(View.VISIBLE);
                 Button btn = findViewById(R.id.savBtn);
                 btn.setText("Alterar");
                 hab_list = mutante.getSkills();
                 nomeView.setText(mutante.getNome());
                 message = "altera";
-                url = "localhost:3000/mutants/1";
-                requestmethod = Request.Method.PATCH;
+                url = "http://10.0.2.2:3000/mutants/" + mutante.getId();/**/
+                requestmethod = Request.Method.PUT;
                 break;
         }
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, hab_list);
@@ -107,7 +139,7 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
     }
 
     public void delete(View view) {
-        url = "localhost:3000/mutants/1";
+        url = "http://10.0.2.2:3000/mutants/" + mutante.getId();
         message = "exclui";
         requestmethod = Request.Method.DELETE;
         queueStarter(mutante);
@@ -144,18 +176,25 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
 
     public void addHabil(View view) {
         ArrayAdapter adapter = (ArrayAdapter) list.getAdapter();
+
+        EditText hab = findViewById(R.id.hab_mut);
+        String h = hab.getText().toString().trim();
+
         if (list.getAdapter().getCount() < 3) {
-            EditText hab = findViewById(R.id.hab_mut);
-            String h = hab.getText().toString().trim();
-            h = h.substring(0, 1).toUpperCase() + h.substring(1).toLowerCase();
-            if ("".equals(h)) {
+            if (h.isEmpty() || "".equals(h.trim())) {
                 Toast.makeText(CadastrarActivity.this, "Habilidade não pode estar em branco!",
                         Toast.LENGTH_SHORT).show();
-            } else if (hab_list.contains(h)) {
+                return;
+            }
+
+            h = h.trim();
+            h = h.substring(0, 1).toUpperCase() + h.substring(1).toLowerCase();
+
+            if (hab_list.contains(h.trim())) {
                 Toast.makeText(CadastrarActivity.this, "Habilidade já informada!",
                         Toast.LENGTH_SHORT).show();
             } else {
-                adapter.add(h);
+                adapter.add(h.trim());
             }
         } else {
             Toast.makeText(CadastrarActivity.this, "Máximo de Habilidades: 3", Toast.LENGTH_SHORT).show();
@@ -173,6 +212,7 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
         JSONObject jsonMutante = MutanteUtils.buildJSONMutant(m);
 
         mQueue = CustomVolleyRequestQueue.getInstance(this.getApplicationContext()).getRequestQueue();
+
         final CustomJSONObjectRequest jsonRequest = new CustomJSONObjectRequest(requestmethod,
                 url, jsonMutante, this, this);
         jsonRequest.setTag(REQUEST_TAG);
@@ -189,6 +229,9 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
 
     @Override
     public void onErrorResponse(VolleyError error) {
+        // Toast.makeText(CadastrarActivity.this, "Já existe um mutante com esse nome na base de dados!",
+        //       Toast.LENGTH_LONG).show();
+
         MutanteUtils.popAlertDialog("Erro de comunicação com o servidor: " + error.getMessage(),
                 CadastrarActivity.this);
     }
@@ -196,21 +239,20 @@ public class CadastrarActivity extends AppCompatActivity implements Response.Lis
     @Override
     public void onResponse(Object response) {
         try {
-            String result = ((JSONObject) response).getString("message");
-            if ("200".equals(result)) {
-                Toast.makeText(CadastrarActivity.this, "Mutante " + message + "do com sucesso!",
-                        Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(CadastrarActivity.this, LandingActivity.class);
-                startActivity(intent);
-                finish();
-            } else if ("500".equals(result)) {
-                Toast.makeText(CadastrarActivity.this, "Já existe um mutante com esse nome na base de dados!",
-                        Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(CadastrarActivity.this, "Falha ao " + message + "r mutante",
-                        Toast.LENGTH_LONG).show();
-            }
+            JSONObject att = ((JSONObject) response);
+            Integer id = att.getInt("id");
+
+            mutante.setId(id);
+
+            Toast.makeText(CadastrarActivity.this, "Mutante " + message + "do com sucesso!",
+                            Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(CadastrarActivity.this, LandingActivity.class);
+            startActivity(intent);
+            finish();
+
         } catch (JSONException e) {
+            Toast.makeText(CadastrarActivity.this, "Falha ao " + message + "r mutante",
+                            Toast.LENGTH_LONG).show();
             Log.e("Save", "Erro de parse no result");
         }
     }

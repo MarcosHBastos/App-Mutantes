@@ -36,7 +36,8 @@ public class ListarActivity extends ListActivity implements Response.Listener,
     private List<Mutante> mutanteList;
     private List<String> mutanteNameList;
     private RequestQueue mQueue;
-    private final String url = "localhost:3000/mutants";
+    private final String url = "http://10.0.2.2:3000/mutants";
+
     private JSONObject j;
 
     @Override
@@ -49,23 +50,22 @@ public class ListarActivity extends ListActivity implements Response.Listener,
         filter = findViewById(R.id.filter);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mutanteNameList);
         list.setAdapter(adapter);
+        j = new JSONObject();
 
         Intent intent = getIntent();
         int opt = intent.getExtras().getInt("option");
         switch (opt) {
             case 1:
-                j = new JSONObject();
                 findViewById(R.id.listBtn).setVisibility(View.GONE);
                 findViewById(R.id.filter).setVisibility(View.GONE);
                 queueStarter();
+
                 /* Trecho para teste sem conexão, necessário comentar 50 e 51
                 mutanteList = MutanteUtils.getTestList();
                 for(Mutante m : mutanteList) {
                     mutanteNameList.add(m.getNome());
-                }
-                ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mutanteNameList);
-                list.setAdapter(adapter);
-                break;*/
+                }*/
+                break;
             case 2:
                 filter = findViewById(R.id.filter);
                 filter.setVisibility(View.VISIBLE);
@@ -78,18 +78,22 @@ public class ListarActivity extends ListActivity implements Response.Listener,
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l,v,position, id);
         Intent it = new Intent(this, CadastrarActivity.class);
+
         it.putExtra("mutante", mutanteList.get(position));
         it.putExtra("option", 2);
         startActivity(it);
     }
 
     public void buscar(View view) {
-        if ("".equals(filter)) {
-            Toast.makeText(ListarActivity.this, "Preencha o filtro!",
-                    Toast.LENGTH_LONG).show();
+
+        Toast.makeText(ListarActivity.this, "BVUSCANDO", Toast.LENGTH_SHORT).show();
+
+        if ("".equals(filter.getText().toString())) {
+
+            Toast.makeText(ListarActivity.this, "Preencha o filtro!", Toast.LENGTH_LONG).show();
         } else {
             try {
-                j.put("filter", filter.getText().toString());
+                j.put("skill", filter.getText().toString());
             } catch (JSONException e) {
                 Log.e("List", "Falha no put do filtro");
             }
@@ -98,10 +102,11 @@ public class ListarActivity extends ListActivity implements Response.Listener,
     }
 
     public void queueStarter() {
+        String skill = filter.getText().toString();
 
         mQueue = CustomVolleyRequestQueue.getInstance(this.getApplicationContext()).getRequestQueue();
         final CustomJSONObjectRequest jsonRequest = new CustomJSONObjectRequest(Request.Method.GET,
-                url, j, this, this);
+                url + "?skill=" + skill, j, this, this);
         jsonRequest.setTag(REQUEST_TAG);
         mQueue.add(jsonRequest);
     }
@@ -123,14 +128,30 @@ public class ListarActivity extends ListActivity implements Response.Listener,
     @Override
     public void onResponse(Object response) {
         if (response != null) {
-            mutanteList = MutanteUtils.parseJSONMutanteList((JSONArray) response);
+            try {
+                System.out.println((String) response.toString());
+
+                JSONArray mutants = ((JSONObject) response).getJSONArray("mutants");
+
+                mutanteList = MutanteUtils.parseJSONMutanteList(mutants, this);
+            } catch (Exception e){
+                        Toast.makeText(ListarActivity.this, "ERRO",
+                                Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
         } else {
             Toast.makeText(ListarActivity.this, "Não existe nenhum mutante com o filtro de habilidade indicado!",
                     Toast.LENGTH_LONG).show();
         }
-        ArrayAdapter adapter = (ArrayAdapter) list.getAdapter();
+
+        mutanteNameList = new ArrayList<String>();
+
         for(Mutante m : mutanteList) {
-            adapter.add(m.getNome());
+            mutanteNameList.add(m.getNome());
         }
+
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, mutanteNameList);
+        list.setAdapter(adapter);
+
     }
 }

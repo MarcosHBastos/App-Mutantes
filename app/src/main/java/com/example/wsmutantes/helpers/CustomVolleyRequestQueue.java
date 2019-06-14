@@ -29,7 +29,7 @@ public class CustomVolleyRequestQueue {
 
     public RequestQueue getRequestQueue() {
         if(mRq ==null) {
-            Cache cache = new DiskBasedCache(mCtx.getCacheDir(), 10 * 1024 *1024);
+            Cache cache = new DiskBasedCache(mCtx.getCacheDir(), 10 * 1024 * 1024);
             Network network = new BasicNetwork(new HurlStack());
             mRq = new RequestQueue(cache, network);
             mRq.start();

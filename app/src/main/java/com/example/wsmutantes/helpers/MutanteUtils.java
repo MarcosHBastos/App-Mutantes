@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +82,7 @@ public class MutanteUtils {
         try {
             mjo.put("id", mutante.getId());
             mjo.put("name", mutante.getNome());
+
             JSONArray ja = new JSONArray();
             for (String s : mutante.getSkills()) {
                 JSONObject jo = new JSONObject();
@@ -88,7 +90,7 @@ public class MutanteUtils {
                 ja.put(jo);
             }
             mjo.put("skills", ja);
-            mjo.put("imagem", mutante.getImage());
+            mjo.put("image", mutante.getImage());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -103,22 +105,35 @@ public class MutanteUtils {
         return mja;
     }
 
-    public static Mutante parseJSONMutante(JSONObject jm) {
+    public static Mutante parseJSONMutante(JSONObject jm, Context context) {
         Mutante m = new Mutante();
         try {
             m.setId(jm.getInt("id"));
-            m.setNome(jm.getString("nome"));
+            m.setNome(jm.getString("name"));
             JSONArray sa = jm.getJSONArray("skills");
             List<String> skills = new ArrayList<>();
             for (int i = 0; i < sa.length(); i++) {
-                skills.add(sa.getJSONObject(i).getString("skill"));
+                skills.add(sa.getJSONObject(i).getString("name"));
             }
             m.setSkills(skills);
-            String cleanImage = jm.getString("imagem").replace("data:image/png;base64,", "")
-                    .replace("data:image/jpeg;base64,","");
-            byte[] decodedString = Base64.decode(cleanImage, Base64.DEFAULT);
-            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-            m.setImgbm(decodedByte);
+
+            String cleanImage = jm.getString("image");
+
+            String filename = "file_" + m.getId();
+            m.setImage(filename);
+
+            String fileContents = cleanImage;
+            FileOutputStream outputStream;
+
+            try {
+                outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
+                Log.e("Parse", "DIR: " + context.getFilesDir() + "\n\n\n\n");
+                outputStream.write(fileContents.getBytes());
+                outputStream.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return m;
         } catch (JSONException e) {
             Log.e("Parse", "Erro no método de cast JSON -> Mutante");
@@ -126,17 +141,19 @@ public class MutanteUtils {
         return null;
     }
 
-    public static List<Mutante> parseJSONMutanteList(JSONArray jma) {
+    // email@email.com
+    // password
+
+    public static List<Mutante> parseJSONMutanteList(JSONArray jma, Context context) {
         List<Mutante> mutanteList = new ArrayList<>();
         for (int i = 0; i < jma.length(); i++) {
             try {
-                mutanteList.add(parseJSONMutante(jma.getJSONObject(i)));
-                return mutanteList;
-            } catch (JSONException e) {
+                mutanteList.add(parseJSONMutante(jma.getJSONObject(i), context));
+            } catch (Exception e) {
                 Log.e("Parse", "Erro no método de cast JSONArray -> List<Mutante>");
             }
         }
-        return null;
+        return mutanteList;
     }
 
 }
